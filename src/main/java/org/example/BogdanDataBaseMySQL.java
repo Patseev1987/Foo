@@ -4,33 +4,33 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BogdanDataBaseMySQL {
-    private String url;
-    private String dataBaseName;
-    private String password;
-    private String login;
+public abstract class BogdanDataBaseMySQL <T>{
+    protected String url;
+    protected String dataBaseName;
+    protected String password;
+    protected String login;
 
-    private final String SELECT = "SELECT";
-    private final String UPDATE = "UPDATE";
-    private final String CREATE = "CREATE";
-    private final String INSERT = "INSERT";
-    private final String ALERT = "ALERT";
-    private final String FROM = "FROM";
-    private final String INTO = "INSERT INTO `";
-    private final String VALUES = "`) VALUES ('";
-    private final String SEPARATOR_AFTER_COLUMN = "`, `";
-    private final String BEFORE_COLUMN = "` (`";
-    private final String END = "');";
-    private final String NOT_NULL = "NOT NULL";
-    private final String AUTO_INCREMENT = "AUTO_INCREMENT";
-    private final String PRIMARY_KEY = "PRIMARY KEY";
-    private final String UNIQUE_INDEX = "UNIQUE INDEX";
-private final String TABLE = "TABLE `";
-private final String COLUMN ="COLUMN `";
-private final String SPACE = " ";
-private final String SCHEMA = "SCHEMA `" ;
-private final String FOREIGN_KEY = "FOREIGN KEY";
-private final String REFERENCES = "REFERENCES";
+    protected final String SELECT = "SELECT";
+    protected final String UPDATE = "UPDATE";
+    protected final String CREATE = "CREATE";
+    protected final String INSERT = "INSERT";
+    protected final String ALERT = "ALERT";
+    protected final String FROM = "FROM";
+    protected final String INTO = "INSERT INTO `";
+    protected final String VALUES = "`) VALUES ('";
+    protected final String SEPARATOR_AFTER_COLUMN = "`, `";
+    protected final String BEFORE_COLUMN = "` (`";
+    protected final String END = "');";
+    protected final String NOT_NULL = "NOT NULL";
+    protected final String AUTO_INCREMENT = "AUTO_INCREMENT";
+    protected final String PRIMARY_KEY = "PRIMARY KEY";
+    protected final String UNIQUE_INDEX = "UNIQUE INDEX";
+    protected final String TABLE = "TABLE `";
+    protected final String COLUMN ="COLUMN `";
+    protected final String SPACE = " ";
+    protected final String SCHEMA = "SCHEMA `" ;
+    protected final String FOREIGN_KEY = "FOREIGN KEY";
+    protected final String REFERENCES = "REFERENCES";
 
     public BogdanDataBaseMySQL(String url, String dataBaseName, String password, String login) {
         this.url = url;
@@ -40,42 +40,24 @@ private final String REFERENCES = "REFERENCES";
 
     }
 
-
-    public List<Person> showDate(String tableName) throws SQLException {
-       String sql =  getSQLStringForSelect(tableName);
-
-
-
+    public Connection getConnectionWithMySQL () throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:mysql://" + url +":3306"+ "/" + dataBaseName,
-                 login,password );
+                login,password );
         System.out.println("Соединение с базой данных установленно!");
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery( sql );
-        List<Person> result = new ArrayList<>();
-        int id;
-        int level;
-        String name;
-        Date date;
-        while (resultSet.next()){
-            id = resultSet.getInt(1);
-            name = resultSet.getString(2);
-            level = resultSet.getInt(3);
-            date = resultSet.getDate(4);
-            result.add(new Person(id,name,level,date));
-        }
-        statement.close();
-        connection.close();
-        return result;
+        return connection;
     }
+
+    public abstract List<T>  showDate(String sqlQuery) throws SQLException;
+
 
 //    private String getStringSQLForInsertData(String tableName) {
 //        String temp = "INSERT INTO `" + dataBaseName + "`.`" + tableName + "` (`name`, `levl`) VALUES ('Jhon', '2');";
 //    }
 
-    public String getSQLStringForSelect (String tableName){
-//        SELECT * FROM myDataBase.users;
-        String temp = SELECT+SPACE+"*"+SPACE+FROM+SPACE+dataBaseName+"."+tableName+";";
-        return temp;
-    }
+//    public String getSQLStringForSelect (String tableName){
+////        SELECT * FROM myDataBase.users;
+//        String temp = SELECT+SPACE+"*"+SPACE+FROM+SPACE+dataBaseName+"."+tableName+";";
+//        return temp;
+//    }
 
 }
